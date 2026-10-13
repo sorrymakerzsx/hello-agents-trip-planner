@@ -18,6 +18,9 @@ dist/
 .pytest_cache/
 .coverage
 htmlcov/
+coverage.xml
+
+testing/jmeter/results/
 
 .vscode/
 .idea/

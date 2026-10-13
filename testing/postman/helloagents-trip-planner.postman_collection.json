@@ -1,0 +1,139 @@
+{
+  "info": {
+    "name": "HelloAgents Trip Planner API",
+    "description": "旅行规划助手 REST API smoke and workflow tests. The plan request invokes the real agent and may consume external API/LLM quota.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "run_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health - root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('HTTP status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('service is healthy', function () { pm.expect(body.status).to.eql('healthy'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trip - parse natural language",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"三天去上海，喜欢历史文化和美食，使用公共交通\"\n}"
+        },
+        "url": "{{base_url}}/api/trip/parse"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('HTTP status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('parse response is successful', function () { pm.expect(body.success).to.eql(true); });",
+              "pm.test('parsed data is present', function () { pm.expect(body.data).to.be.an('object'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trip - create plan (live, optional)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"city\": \"上海\",\n  \"start_date\": \"2026-11-01\",\n  \"end_date\": \"2026-11-03\",\n  \"travel_days\": 3,\n  \"transportation\": \"公共交通\",\n  \"accommodation\": \"经济型酒店\",\n  \"preferences\": [\"历史文化\", \"美食\"],\n  \"free_text_input\": \"优先安排公共交通方便的景点\",\n  \"require_human_review\": true\n}"
+        },
+        "url": "{{base_url}}/api/trip/plan"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('HTTP status is successful', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+              "const body = pm.response.json();",
+              "pm.test('plan response is successful', function () { pm.expect(body.success).to.eql(true); });",
+              "if (body.run_id) { pm.collectionVariables.set('run_id', body.run_id); }",
+              "pm.test('run_id is returned', function () { pm.expect(body.run_id).to.be.a('string').and.not.empty; });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Session - get status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/trip/sessions/{{run_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('HTTP status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('session id matches', function () { pm.expect(body.run_id).to.eql(pm.collectionVariables.get('run_id')); });",
+              "pm.test('events is an array', function () { pm.expect(body.events).to.be.an('array'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Session - approve review",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"comment\": \"Postman smoke test approved\"\n}"
+        },
+        "url": "{{base_url}}/api/trip/sessions/{{run_id}}/approve"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('HTTP status is 200', function () { pm.response.to.have.status(200); });",
+              "const body = pm.response.json();",
+              "pm.test('session is approved', function () { pm.expect(body.status).to.eql('APPROVED'); });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

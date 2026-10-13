@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 from typing import List
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
@@ -23,6 +24,18 @@ class Settings(BaseSettings):
     app_name: str = "HelloAgents智能旅行助手"
     app_version: str = "1.0.0"
     debug: bool = False
+
+    @field_validator("debug", mode="before")
+    @classmethod
+    def parse_debug_flag(cls, value):
+        """兼容 .env 中常见的 debug/release 环境标记。"""
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"debug", "dev", "development", "true", "1", "yes", "on"}:
+                return True
+            if normalized in {"release", "prod", "production", "false", "0", "no", "off"}:
+                return False
+        return value
 
     # 服务器配置
     host: str = "0.0.0.0"

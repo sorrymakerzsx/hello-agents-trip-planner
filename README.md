@@ -217,3 +217,46 @@ CC BY-NC-SA 4.0
 ```powershell
 cd backend
 python -m pytest -q
+```
+
+## 测试与持续集成
+
+### pytest 自动化测试
+
+```powershell
+cd backend
+python -m pytest -q
+python -m pytest --cov=app --cov-report=term-missing -q
+```
+
+测试代码位于 `backend/tests/`，包含 Harness 恢复、超时重试、缓存熔断、SQLite 会话和接口集成测试。
+
+### Postman 接口测试
+
+导入以下文件：
+
+- `testing/postman/helloagents-trip-planner.postman_collection.json`
+- `testing/postman/local.postman_environment.json`
+
+先启动后端，再选择 `HelloAgents Trip Planner - Local` 环境。建议按照健康检查、自然语言解析、创建规划、查询会话、人工审核的顺序执行。
+
+“创建规划”会调用真实 Agent，可能消耗 LLM、天气和地图 API 配额；日常回归优先执行轻量健康检查和解析接口。
+
+### JMeter 性能测试
+
+测试计划位于 `testing/jmeter/health-test.jmx`，默认使用 10 个并发线程、每个线程循环 5 次，测试轻量的 `/health` 接口：
+
+```powershell
+jmeter -n -t testing/jmeter/health-test.jmx `
+  -l testing/jmeter/results/health.jtl `
+  -e -o testing/jmeter/results/report
+```
+
+重点关注平均响应时间、P95 响应时间、吞吐量和错误率。不要直接对真实 LLM 规划接口进行高并发压测。
+
+### CI/CD
+
+- GitHub Actions：`.github/workflows/backend-tests.yml`
+- Jenkins：`Jenkinsfile`
+
+每次 push 或 Pull Request 会安装后端开发依赖、执行 pytest 并生成覆盖率报告。Jenkins 默认执行测试，只有手动开启 `BUILD_DOCKER` 参数时才构建后端镜像。
