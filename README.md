@@ -210,3 +210,10 @@ CC BY-NC-SA 4.0
 
 **HelloAgents智能旅行助手** - 让旅行计划变得简单而智能 🌈
 
+## 本地测试
+
+进入后端目录：
+
+```powershell
+cd backend
+python -m pytest -q
