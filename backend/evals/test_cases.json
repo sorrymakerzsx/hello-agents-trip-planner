@@ -1,0 +1,57 @@
+[
+  {
+    "id": "beijing_history_2d",
+    "city": "北京",
+    "start_date": "2026-07-10",
+    "end_date": "2026-07-11",
+    "travel_days": 2,
+    "transportation": "公共交通",
+    "accommodation": "经济型酒店",
+    "preferences": ["历史文化"],
+    "free_text_input": "重点安排故宫和历史文化景点"
+  },
+  {
+    "id": "shanghai_food_3d",
+    "city": "上海",
+    "start_date": "2026-08-01",
+    "end_date": "2026-08-03",
+    "travel_days": 3,
+    "transportation": "公共交通",
+    "accommodation": "舒适型酒店",
+    "preferences": ["美食", "购物"],
+    "free_text_input": "希望安排外滩和本地特色美食"
+  },
+  {
+    "id": "hangzhou_nature_2d",
+    "city": "杭州",
+    "start_date": "2026-09-12",
+    "end_date": "2026-09-13",
+    "travel_days": 2,
+    "transportation": "混合",
+    "accommodation": "民宿",
+    "preferences": ["自然风光"],
+    "free_text_input": "重点安排西湖周边景点"
+  },
+  {
+    "id": "guangzhou_food_4d",
+    "city": "广州",
+    "start_date": "2026-10-01",
+    "end_date": "2026-10-04",
+    "travel_days": 4,
+    "transportation": "公共交通",
+    "accommodation": "经济型酒店",
+    "preferences": ["美食"],
+    "free_text_input": "安排早茶和城市地标"
+  },
+  {
+    "id": "xuzhou_short_1d",
+    "city": "徐州",
+    "start_date": "2026-11-15",
+    "end_date": "2026-11-15",
+    "travel_days": 1,
+    "transportation": "自驾",
+    "accommodation": "经济型酒店",
+    "preferences": ["历史文化"],
+    "free_text_input": "适合一日游，节奏不要太快"
+  }
+]

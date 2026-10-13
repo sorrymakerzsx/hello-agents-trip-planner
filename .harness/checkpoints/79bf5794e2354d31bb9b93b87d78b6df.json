@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "saved_at": "2026-10-11T20:55:09.906257",
+  "reason": "event:run_failed",
+  "context": {
+    "run_id": "79bf5794e2354d31bb9b93b87d78b6df",
+    "city": "北京",
+    "travel_days": 3,
+    "current_phase": "failed",
+    "completed_agents": [],
+    "agent_results": {},
+    "errors": [
+      "slow_agent: TimeoutError",
+      "TimeoutError"
+    ],
+    "evaluation": {},
+    "event_count": 7,
+    "last_event_type": "run_failed",
+    "last_event_data": {
+      "error": "TimeoutError"
+    }
+  }
+}

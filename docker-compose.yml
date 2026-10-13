@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - ./backend/.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8000
+      CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+      DEBUG: "false"
+      HTTP_PROXY: "http://host.docker.internal:7897"
+      HTTPS_PROXY: "http://host.docker.internal:7897"
+      ALL_PROXY: ""
+      NO_PROXY: "localhost,127.0.0.1,backend,frontend"
+      http_proxy: "http://host.docker.internal:7897"
+      https_proxy: "http://host.docker.internal:7897"
+      no_proxy: "localhost,127.0.0.1,backend,frontend"
+    volumes:
+      - harness_checkpoints:/app/.harness
+    expose:
+      - "8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  harness_checkpoints:

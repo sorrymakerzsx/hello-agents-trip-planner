@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "saved_at": "2026-10-11T20:55:09.479188",
+  "reason": "event:run_finished",
+  "context": {
+    "run_id": "f35cfebbd39c40268ec2d1b66d4a3725",
+    "city": "北京",
+    "travel_days": 3,
+    "current_phase": "finished",
+    "completed_agents": [
+      "weather"
+    ],
+    "agent_results": {
+      "weather": {
+        "status": "ok",
+        "attempt": 2
+      }
+    },
+    "errors": [],
+    "evaluation": {},
+    "event_count": 7,
+    "last_event_type": "run_finished",
+    "last_event_data": {
+      "result_type": "dict"
+    }
+  }
+}
